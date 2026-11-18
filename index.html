@@ -1,0 +1,1490 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Happy Birthday, Principessa</title>
+
+  <!-- Google Fonts: Editorial Serif, Clean UI Sans, and Monospace for ASCII touches -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=DM+Sans:wght@300;400;500&family=JetBrains+Mono:wght@300;400&display=swap" rel="stylesheet" />
+
+  <!-- Tailwind CSS for responsive layout utilities -->
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+
+  <style>
+    :root {
+      --bg-midnight: #07060a;
+      --bg-canvas: #060608;
+      --gold: #ffd166;
+      --gold-soft: #f3d5a5;
+      --rose: #f4c2d7;
+      --rose-muted: #d8a2b8;
+      --emerald: #52b788;
+      --emerald-light: #95d5b2;
+      --text-main: #f6f1f4;
+      --text-dim: rgba(246, 241, 244, 0.68);
+    }
+
+    * {
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background-color: var(--bg-midnight);
+      color: var(--text-main);
+      font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      user-select: none;
+    }
+
+    .font-serif-editorial {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+    }
+
+    .font-mono-code {
+      font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, monospace;
+    }
+
+    /* Full-screen background canvases */
+    #bouquetCanvas {
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      display: block;
+      background-color: var(--bg-canvas);
+      cursor: pointer;
+      z-index: 1;
+      transition: opacity 1.3s cubic-bezier(0.22, 1, 0.36, 1), filter 1.3s ease;
+    }
+
+    #bouquetCanvas.dimmed-scene2 {
+      opacity: 0.14;
+      filter: blur(1.5px);
+      pointer-events: none;
+    }
+
+    #bouquetCanvas.dimmed-scene3 {
+      opacity: 0.30;
+      filter: blur(0.4px);
+      pointer-events: auto;
+    }
+
+    /* Soft radial vignette layered over canvas for editorial depth */
+    .vignette {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 2;
+      background: radial-gradient(circle at 50% 48%, rgba(7, 6, 10, 0) 20%, rgba(7, 6, 10, 0.65) 75%, rgba(7, 6, 10, 0.92) 100%);
+      transition: opacity 1.2s ease;
+    }
+
+    /* Celebration petals & stardust canvas */
+    #celebrationCanvas {
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 30;
+    }
+
+    /* Scene containers */
+    .scene {
+      position: fixed;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: max(20px, env(safe-area-inset-top)) 20px max(24px, env(safe-area-inset-bottom));
+      z-index: 10;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.95s cubic-bezier(0.22, 1, 0.36, 1), transform 0.95s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    .scene.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    /* Scene 1 bottom overlay */
+    #scene1-ui {
+      justify-content: flex-end;
+      padding-bottom: clamp(28px, 6vh, 54px);
+      pointer-events: none;
+    }
+
+    .scene1-footer {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 14px;
+      opacity: 0;
+      transform: translateY(14px);
+      transition: opacity 1.1s ease, transform 1.1s cubic-bezier(0.22, 1, 0.36, 1);
+      pointer-events: none;
+    }
+
+    .scene1-footer.visible {
+      opacity: 1;
+      transform: translateY(0);
+      pointer-events: auto;
+    }
+
+    /* Refined understated pill button */
+    .pill-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 11px 24px;
+      border-radius: 9999px;
+      border: 1px solid rgba(244, 194, 215, 0.30);
+      background: rgba(18, 14, 24, 0.72);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      color: var(--text-main);
+      font-size: 0.92rem;
+      letter-spacing: 0.02em;
+      cursor: pointer;
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+      transition: background 0.3s ease, border-color 0.3s ease, transform 0.25s ease, box-shadow 0.3s ease;
+    }
+
+    .pill-btn:hover {
+      background: rgba(34, 24, 42, 0.88);
+      border-color: rgba(244, 194, 215, 0.58);
+      transform: translateY(-1px);
+      box-shadow: 0 10px 32px rgba(244, 194, 215, 0.14), inset 0 1px 0 rgba(255, 255, 255, 0.14);
+    }
+
+    .pill-btn:active {
+      transform: translateY(0) scale(0.98);
+    }
+
+    /* Scene 2: Candlelight radial glow behind cake */
+    .candlelight-halo {
+      position: absolute;
+      width: min(520px, 95vw);
+      height: min(520px, 95vw);
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(255, 198, 102, 0.20) 0%, rgba(244, 162, 185, 0.08) 38%, rgba(7, 6, 10, 0) 70%);
+      pointer-events: none;
+      transform: translateY(-28px);
+      transition: opacity 1.1s ease, transform 1.1s ease;
+      animation: haloPulse 3.2s ease-in-out infinite alternate;
+    }
+
+    .candles-out .candlelight-halo {
+      opacity: 0.18;
+      transform: translateY(-28px) scale(0.85);
+      animation: none;
+    }
+
+    @keyframes haloPulse {
+      0% { opacity: 0.82; transform: translateY(-28px) scale(0.97); }
+      100% { opacity: 1; transform: translateY(-28px) scale(1.04); }
+    }
+
+    /* Cake SVG & Flame Animations */
+    #cake-svg {
+      width: min(310px, 82vw);
+      height: auto;
+      position: relative;
+      z-index: 2;
+      filter: drop-shadow(0 22px 34px rgba(0, 0, 0, 0.68));
+      transition: filter 0.8s ease;
+    }
+
+    .flame-group {
+      transform-box: fill-box;
+      transform-origin: 50% 100%;
+      transition: opacity 0.35s ease, transform 0.35s ease;
+    }
+
+    .flame-1 { animation: flicker 0.42s ease-in-out infinite alternate; }
+    .flame-2 { animation: flicker 0.36s ease-in-out 0.12s infinite alternate; }
+    .flame-3 { animation: flicker 0.48s ease-in-out 0.05s infinite alternate; }
+
+    @keyframes flicker {
+      0%   { transform: scale(0.96, 1.04) rotate(-2.5deg); }
+      50%  { transform: scale(1.04, 0.96) rotate(1.8deg); }
+      100% { transform: scale(0.98, 1.07) rotate(2.8deg); }
+    }
+
+    .candles-out .flame-group {
+      opacity: 0;
+      transform: scale(0.2) translateY(4px);
+      animation: none;
+    }
+
+    /* Curling smoke wisps when candles are blown out */
+    .smoke-wisp {
+      opacity: 0;
+      stroke-dasharray: 60;
+      stroke-dashoffset: 60;
+    }
+
+    .candles-out .smoke-wisp {
+      animation: smokeRise 2.2s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+    }
+
+    .candles-out .smoke-2 { animation-delay: 0.09s; }
+    .candles-out .smoke-3 { animation-delay: 0.17s; }
+
+    @keyframes smokeRise {
+      0% {
+        opacity: 0;
+        stroke-dashoffset: 60;
+        transform: translateY(4px) scale(0.9);
+      }
+      20% {
+        opacity: 0.65;
+      }
+      70% {
+        opacity: 0.35;
+        stroke-dashoffset: 0;
+      }
+      100% {
+        opacity: 0;
+        stroke-dashoffset: -12;
+        transform: translateY(-28px) scale(1.12);
+      }
+    }
+
+    /* Tactile Blow Button with smooth spring transition for runaway dodges */
+    #blowBtn {
+      position: relative;
+      z-index: 25;
+      padding: 13px 28px;
+      border-radius: 9999px;
+      border: 1px solid rgba(255, 209, 102, 0.42);
+      background: linear-gradient(135deg, rgba(42, 26, 36, 0.92), rgba(24, 16, 28, 0.94));
+      color: #fff6ea;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.96rem;
+      font-weight: 400;
+      letter-spacing: 0.02em;
+      cursor: pointer;
+      touch-action: manipulation;
+      box-shadow:
+        0 10px 28px rgba(0, 0, 0, 0.55),
+        0 0 22px rgba(255, 209, 102, 0.12),
+        inset 0 1px 0 rgba(255, 238, 205, 0.20);
+      transition:
+        left 0.46s cubic-bezier(0.22, 1.28, 0.36, 1),
+        top 0.46s cubic-bezier(0.22, 1.28, 0.36, 1),
+        opacity 0.55s ease,
+        transform 0.25s ease,
+        border-color 0.3s ease,
+        box-shadow 0.3s ease;
+    }
+
+    #blowBtn:hover {
+      border-color: rgba(255, 209, 102, 0.72);
+      box-shadow:
+        0 12px 32px rgba(0, 0, 0, 0.6),
+        0 0 28px rgba(255, 209, 102, 0.22),
+        inset 0 1px 0 rgba(255, 238, 205, 0.3);
+    }
+
+    #blowBtn.fade-away {
+      opacity: 0;
+      transform: scale(0.92);
+      pointer-events: none;
+    }
+
+    /* Hint text smooth swap */
+    #cakeHint {
+      min-height: 1.75em;
+      transition: opacity 0.28s ease, transform 0.28s ease;
+    }
+
+    #cakeHint.swapping {
+      opacity: 0;
+      transform: translateY(4px);
+    }
+
+    /* Scene 3 Editorial Reveal */
+    .reveal-item {
+      opacity: 0;
+      transform: translateY(16px);
+      transition: opacity 1s cubic-bezier(0.22, 1, 0.36, 1), transform 1s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    #scene3.active .reveal-item {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    #scene3.active .reveal-delay-1 { transition-delay: 0.15s; }
+    #scene3.active .reveal-delay-2 { transition-delay: 0.42s; }
+    #scene3.active .reveal-delay-3 { transition-delay: 0.75s; }
+    #scene3.active .reveal-delay-4 { transition-delay: 1.15s; }
+
+    .replay-btn {
+      background: transparent;
+      border: 1px solid rgba(246, 241, 244, 0.16);
+      color: rgba(246, 241, 244, 0.56);
+      padding: 8px 18px;
+      border-radius: 9999px;
+      font-size: 0.78rem;
+      letter-spacing: 0.08em;
+      text-transform: lowercase;
+      cursor: pointer;
+      transition: color 0.3s ease, border-color 0.3s ease, background 0.3s ease;
+    }
+
+    .replay-btn:hover {
+      color: var(--rose);
+      border-color: rgba(244, 194, 215, 0.4);
+      background: rgba(244, 194, 215, 0.05);
+    }
+  
+    .gift-btn{font-family:'Cormorant Garamond',Georgia,serif;font-style:italic;font-size:1.15rem;padding:12px 26px;border-radius:999px;border:0;cursor:pointer;color:#2a0a1a;background:linear-gradient(135deg,#ffd166,#f4a6c6);box-shadow:0 0 28px rgba(244,166,198,.45);animation:giftPulse 1.8s ease-in-out infinite}
+    @keyframes giftPulse{50%{transform:scale(1.06);box-shadow:0 0 40px rgba(255,209,102,.6)}}
+    #surprise{max-height:0;opacity:0;overflow:hidden;transition:all 1s ease;font-family:'Cormorant Garamond',Georgia,serif;font-style:italic;font-size:1.25rem;color:var(--gold-soft);margin-top:0}
+    #surprise.show{max-height:140px;opacity:1;margin-top:18px}
+  </style>
+</head>
+<body>
+
+  <!-- SCENE 1 BACKGROUND: Full-screen Animated ASCII Flower Bouquet Canvas -->
+  <canvas id="bouquetCanvas" aria-label="Animated ASCII flower bouquet growing"></canvas>
+
+  <!-- Soft atmospheric vignette -->
+  <div class="vignette" aria-hidden="true"></div>
+
+  <!-- SCENE 1 UI OVERLAY -->
+  <section id="scene1-ui" class="scene active" aria-label="Flower Bouquet Scene">
+    <div id="scene1Footer" class="scene1-footer">
+      <p class="font-mono-code text-xs sm:text-sm tracking-wide text-[#d8e8df]/75">
+        grown in code, just for you
+      </p>
+      <button id="toCakeBtn" type="button" class="pill-btn">
+        <span>see your cake</span>
+        <span aria-hidden="true" class="text-[#f4c2d7]">&rarr;</span>
+      </button>
+    </div>
+  </section>
+
+  <!-- SCENE 2: Slice of Birthday Cake & Playful Runaway Button -->
+  <section id="scene2" class="scene" aria-label="Birthday Cake Scene">
+    <div id="cakeStage" class="relative flex flex-col items-center justify-center w-full max-w-md px-3">
+      <!-- Warm candlelight radial halo -->
+      <div class="candlelight-halo" aria-hidden="true"></div>
+
+      <!-- Custom Artisanal SVG: 3D Perspective Slice of Birthday Cake on Ceramic Plate -->
+      <svg id="cake-svg" viewBox="0 0 320 290" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="A slice of birthday cake with three lit candles">
+        <defs>
+          <!-- Warm top candle glow cast onto cake -->
+          <radialGradient id="topGlow" cx="50%" cy="32%" r="48%">
+            <stop offset="0%" stop-color="#ffd166" stop-opacity="0.42" />
+            <stop offset="55%" stop-color="#ff9f43" stop-opacity="0.12" />
+            <stop offset="100%" stop-color="#ffd166" stop-opacity="0" />
+          </radialGradient>
+
+          <!-- Ceramic plate gradients -->
+          <linearGradient id="plateRim" x1="30" y1="210" x2="290" y2="255" gradientUnits="userSpaceOnUse">
+            <stop offset="0%" stop-color="#f2e9e4" />
+            <stop offset="48%" stop-color="#dfd3cc" />
+            <stop offset="100%" stop-color="#b8a69d" />
+          </linearGradient>
+          <radialGradient id="plateInner" cx="46%" cy="42%" r="55%">
+            <stop offset="0%" stop-color="#fbf7f4" />
+            <stop offset="72%" stop-color="#e7dcd6" />
+            <stop offset="100%" stop-color="#cbbab2" />
+          </radialGradient>
+
+          <!-- Sponge cake warm vanilla shading -->
+          <linearGradient id="spongeFront" x1="72" y1="145" x2="245" y2="225" gradientUnits="userSpaceOnUse">
+            <stop offset="0%" stop-color="#f8dfba" />
+            <stop offset="55%" stop-color="#ecc694" />
+            <stop offset="100%" stop-color="#d5a672" />
+          </linearGradient>
+
+          <!-- Back/crust side of slice -->
+          <linearGradient id="cakeBack" x1="215" y1="120" x2="252" y2="215" gradientUnits="userSpaceOnUse">
+            <stop offset="0%" stop-color="#f5dde5" />
+            <stop offset="100%" stop-color="#d8a8ba" />
+          </linearGradient>
+
+          <!-- Berry-cream filling -->
+          <linearGradient id="berryFilling" x1="72" y1="185" x2="236" y2="185" gradientUnits="userSpaceOnUse">
+            <stop offset="0%" stop-color="#d96b8c" />
+            <stop offset="50%" stop-color="#c45074" />
+            <stop offset="100%" stop-color="#a23b5c" />
+          </linearGradient>
+
+          <!-- Glossy cream frosting top -->
+          <linearGradient id="frostingTop" x1="70" y1="125" x2="246" y2="165" gradientUnits="userSpaceOnUse">
+            <stop offset="0%" stop-color="#fffaf5" />
+            <stop offset="60%" stop-color="#f9ebe6" />
+            <stop offset="100%" stop-color="#ebd5d2" />
+          </linearGradient>
+
+          <!-- Strawberry gradient -->
+          <radialGradient id="strawberryGrad" cx="35%" cy="30%" r="70%">
+            <stop offset="0%" stop-color="#ff6b81" />
+            <stop offset="55%" stop-color="#d63447" />
+            <stop offset="100%" stop-color="#8f1d2c" />
+          </radialGradient>
+
+          <!-- Candle wax gradients -->
+          <linearGradient id="candleRose" x1="0" y1="0" x2="1" y2="0">
+            <stop offset="0%" stop-color="#f7cadb" />
+            <stop offset="55%" stop-color="#e89cb8" />
+            <stop offset="100%" stop-color="#c47292" />
+          </linearGradient>
+          <linearGradient id="candleGold" x1="0" y1="0" x2="1" y2="0">
+            <stop offset="0%" stop-color="#fff0cc" />
+            <stop offset="55%" stop-color="#f3cf87" />
+            <stop offset="100%" stop-color="#cfa253" />
+          </linearGradient>
+          <linearGradient id="candleSage" x1="0" y1="0" x2="1" y2="0">
+            <stop offset="0%" stop-color="#d8f3dc" />
+            <stop offset="55%" stop-color="#95d5b2" />
+            <stop offset="100%" stop-color="#64a883" />
+          </linearGradient>
+
+          <!-- Flame glow filter -->
+          <filter id="flameBlur" x="-60%" y="-60%" width="220%" height="220%">
+            <feGaussianBlur stdDeviation="4" result="blur" />
+            <feMerge>
+              <feMergeNode in="blur" />
+              <feMergeNode in="SourceGraphic" />
+            </feMerge>
+          </filter>
+        </defs>
+
+        <!-- Ambient candle glow over cake -->
+        <ellipse cx="162" cy="110" rx="115" ry="88" fill="url(#topGlow)" class="flame-group" />
+
+        <!-- Minimalist Ceramic Plate -->
+        <ellipse cx="162" cy="238" rx="126" ry="30" fill="#000000" fill-opacity="0.38" />
+        <ellipse cx="160" cy="232" rx="124" ry="28" fill="url(#plateRim)" />
+        <ellipse cx="160" cy="229" rx="102" ry="20" fill="url(#plateInner)" stroke="#ffffff" stroke-opacity="0.45" stroke-width="1" />
+
+        <!-- Soft shadow cast by cake slice on plate -->
+        <path d="M74 221 L234 226 C246 226 254 218 250 212 L224 202 L82 212 Z" fill="#6d564f" fill-opacity="0.28" />
+
+        <!-- Back curved frosting wall of the slice -->
+        <path d="M225 130 C246 136 250 154 248 182 C247 200 242 214 228 221 L222 142 Z" fill="url(#cakeBack)" />
+
+        <!-- Main Triangular Sponge Front Face -->
+        <path d="M76 164 L228 148 L228 221 L76 218 Z" fill="url(#spongeFront)" />
+
+        <!-- Subtle artisanal sponge crumb texture dots -->
+        <g fill="#b57f4b" fill-opacity="0.26">
+          <circle cx="96" cy="176" r="1.3" />
+          <circle cx="118" cy="171" r="1.1" />
+          <circle cx="145" cy="168" r="1.4" />
+          <circle cx="176" cy="164" r="1.2" />
+          <circle cx="204" cy="162" r="1.5" />
+          <circle cx="105" cy="206" r="1.3" />
+          <circle cx="136" cy="204" r="1.1" />
+          <circle cx="168" cy="208" r="1.4" />
+          <circle cx="198" cy="203" r="1.2" />
+          <circle cx="215" cy="211" r="1.1" />
+        </g>
+
+        <!-- Cream & Berry Filling Middle Layer -->
+        <!-- Soft cream band -->
+        <path d="M76 184 L228 176 L228 183 L76 190 Z" fill="#fff6f0" fill-opacity="0.92" />
+        <!-- Berry jam band -->
+        <path d="M76 190 L228 183 L228 193 L76 198 Z" fill="url(#berryFilling)" />
+        <!-- Tiny berry highlights -->
+        <ellipse cx="112" cy="193" rx="6" ry="2.2" fill="#ff9eb5" fill-opacity="0.45" />
+        <ellipse cx="166" cy="190" rx="8" ry="2.4" fill="#ff9eb5" fill-opacity="0.38" />
+        <ellipse cx="207" cy="188" rx="5" ry="2" fill="#ff9eb5" fill-opacity="0.4" />
+
+        <!-- Top Frosted Surface (3D perspective wedge) -->
+        <path d="M72 162 C70 158 75 154 84 150 L205 117 C225 113 245 123 247 136 C248 144 240 150 228 151 L78 166 C74 166 72 164 72 162 Z" fill="url(#frostingTop)" />
+
+        <!-- Glossy Cream Frosting Drips along the front edge -->
+        <path d="M74 162
+                 C74 172 82 178 88 175
+                 C94 172 96 164 104 165
+                 C112 166 112 184 121 184
+                 C130 184 130 164 140 163
+                 C150 162 153 175 161 174
+                 C169 173 171 159 181 158
+                 C191 157 193 178 202 177
+                 C211 176 211 157 220 155
+                 C229 153 236 164 242 158
+                 C247 153 248 141 247 135
+                 L227 148 L76 162 Z"
+              fill="#fff9f5" />
+
+        <!-- Delicate shading under frosting drips -->
+        <path d="M76 166 C82 178 92 178 96 167 M111 167 C113 185 128 186 131 166 M151 165 C154 176 168 176 171 161 M191 160 C194 179 209 179 212 158"
+              stroke="#d5a672" stroke-opacity="0.35" stroke-width="1.5" stroke-linecap="round" />
+
+        <!-- Piping Swirl of Whipped Cream near back of slice -->
+        <path d="M198 134 C192 126 202 117 212 120 C222 115 232 124 226 133 C220 140 203 141 198 134 Z" fill="#fffaf7" stroke="#ecd9d5" stroke-width="1" />
+        <path d="M204 127 C208 122 217 122 221 128" stroke="#e9d2ce" stroke-width="1.2" stroke-linecap="round" />
+
+        <!-- Cute Artisanal Strawberry on Top -->
+        <g transform="translate(194, 102) rotate(12)">
+          <!-- Strawberry body -->
+          <path d="M14 4 C24 4 29 14 25 24 C21 32 14 35 12 35 C10 35 3 31 1 23 C-1 13 4 4 14 4 Z" fill="url(#strawberryGrad)" />
+          <!-- Gloss highlight -->
+          <ellipse cx="9" cy="14" rx="2.5" ry="5.5" transform="rotate(-14 9 14)" fill="#ffffff" fill-opacity="0.28" />
+          <!-- Tiny golden seeds -->
+          <g fill="#ffe599" fill-opacity="0.8">
+            <circle cx="8" cy="19" r="0.8" />
+            <circle cx="15" cy="15" r="0.8" />
+            <circle cx="20" cy="19" r="0.8" />
+            <circle cx="12" cy="24" r="0.8" />
+            <circle cx="18" cy="25" r="0.8" />
+            <circle cx="14" cy="29" r="0.7" />
+          </g>
+          <!-- Green leafy crown (calyx) -->
+          <path d="M14 6 C10 1 4 2 2 6 C6 6 9 7 12 8 C11 3 16 1 18 0 C17 3 17 5 16 7 C20 5 24 6 26 9 C22 9 18 8 14 6 Z" fill="#52b788" />
+          <path d="M14 6 C14 2 15 0 16 -2" stroke="#40916c" stroke-width="1.4" stroke-linecap="round" />
+        </g>
+
+        <!-- THREE SLENDER STRIPED BIRTHDAY CANDLES -->
+        <!-- Candle 1 (Left, Rose) -->
+        <g>
+          <ellipse cx="118" cy="149" rx="6" ry="2.2" fill="#d9c0bc" fill-opacity="0.6" />
+          <rect x="114.5" y="102" width="7" height="47" rx="3" fill="url(#candleRose)" />
+          <!-- Diagonal subtle stripes -->
+          <path d="M114.5 114 L121.5 109 M114.5 124 L121.5 119 M114.5 134 L121.5 129 M114.5 144 L121.5 139" stroke="#fff5f8" stroke-opacity="0.55" stroke-width="1.4" />
+          <!-- Wick -->
+          <line x1="118" y1="102" x2="118" y2="96" stroke="#3b2f35" stroke-width="1.4" stroke-linecap="round" />
+          <!-- Flame 1 -->
+          <g class="flame-group flame-1" filter="url(#flameBlur)">
+            <path d="M118 74 C124 83 124 93 118 96 C112 93 112 83 118 74 Z" fill="#ff9f1c" fill-opacity="0.92" />
+            <path d="M118 80 C121.5 86 121.5 92.5 118 95 C114.5 92.5 114.5 86 118 80 Z" fill="#ffe184" />
+            <ellipse cx="118" cy="91.5" rx="1.6" ry="2.6" fill="#ffffff" />
+          </g>
+          <!-- Smoke Wisp 1 -->
+          <path class="smoke-wisp smoke-1" d="M118 95 C114 86 123 79 117 69 C112 61 121 54 118 46" stroke="#e8e2e6" stroke-width="2" stroke-linecap="round" fill="none" />
+        </g>
+
+        <!-- Candle 2 (Center, Warm Gold - slightly taller) -->
+        <g>
+          <ellipse cx="147" cy="143" rx="6" ry="2.2" fill="#d9c0bc" fill-opacity="0.6" />
+          <rect x="143.5" y="90" width="7" height="53" rx="3" fill="url(#candleGold)" />
+          <path d="M143.5 102 L150.5 97 M143.5 113 L150.5 108 M143.5 124 L150.5 119 M143.5 135 L150.5 130" stroke="#fffdf7" stroke-opacity="0.6" stroke-width="1.4" />
+          <line x1="147" y1="90" x2="147" y2="84" stroke="#3b2f35" stroke-width="1.4" stroke-linecap="round" />
+          <!-- Flame 2 -->
+          <g class="flame-group flame-2" filter="url(#flameBlur)">
+            <path d="M147 61 C153.5 71 153.5 81 147 84 C140.5 81 140.5 71 147 61 Z" fill="#ff9f1c" fill-opacity="0.94" />
+            <path d="M147 67 C150.8 74 150.8 80.5 147 83 C143.2 80.5 143.2 74 147 67 Z" fill="#ffe184" />
+            <ellipse cx="147" cy="79.5" rx="1.7" ry="2.8" fill="#ffffff" />
+          </g>
+          <!-- Smoke Wisp 2 -->
+          <path class="smoke-wisp smoke-2" d="M147 83 C152 74 142 66 148 56 C153 47 144 40 147 33" stroke="#e8e2e6" stroke-width="2.1" stroke-linecap="round" fill="none" />
+        </g>
+
+        <!-- Candle 3 (Right, Soft Sage) -->
+        <g>
+          <ellipse cx="174" cy="138" rx="6" ry="2.2" fill="#d9c0bc" fill-opacity="0.6" />
+          <rect x="170.5" y="95" width="7" height="43" rx="3" fill="url(#candleSage)" />
+          <path d="M170.5 106 L177.5 101 M170.5 116 L177.5 111 M170.5 126 L177.5 121 M170.5 134 L177.5 129" stroke="#f2fff5" stroke-opacity="0.55" stroke-width="1.4" />
+          <line x1="174" y1="95" x2="174" y2="89" stroke="#3b2f35" stroke-width="1.4" stroke-linecap="round" />
+          <!-- Flame 3 -->
+          <g class="flame-group flame-3" filter="url(#flameBlur)">
+            <path d="M174 68 C179.8 77 179.8 86 174 89 C168.2 86 168.2 77 174 68 Z" fill="#ff9f1c" fill-opacity="0.92" />
+            <path d="M174 74 C177.2 80 177.2 85.5 174 88 C170.8 85.5 170.8 80 174 74 Z" fill="#ffe184" />
+            <ellipse cx="174" cy="84.5" rx="1.5" ry="2.4" fill="#ffffff" />
+          </g>
+          <!-- Smoke Wisp 3 -->
+          <path class="smoke-wisp smoke-3" d="M174 88 C170 79 179 72 173 62 C168 54 176 47 174 40" stroke="#e8e2e6" stroke-width="1.9" stroke-linecap="round" fill="none" />
+        </g>
+      </svg>
+
+      <!-- Calm Editorial Prompt -->
+      <p id="cakeHint" class="font-serif-editorial italic text-xl sm:text-2xl text-[#f6ece6]/90 text-center mt-2 mb-6 px-4">
+        Make a wish first... then blow them out.
+      </p>
+
+      <!-- Button placeholder slot so layout stays calm even when button turns fixed -->
+      <div id="btnSlot" class="h-14 flex items-center justify-center">
+        <button id="blowBtn" type="button">Blow out the candles</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- SCENE 3: Happy Birthday Principessa -->
+  <section id="scene3" class="scene overflow-y-auto" aria-label="Birthday Message Scene">
+    <div class="max-w-lg w-full text-center px-4 flex flex-col items-center">
+      <p class="reveal-item reveal-delay-1 font-mono-code text-[11px] sm:text-xs tracking-[0.14em] text-[#95d5b2]/80 mb-5">
+        &mdash; a little corner of the internet for you &mdash;
+      </p>
+
+      <h1 class="reveal-item reveal-delay-2 font-serif-editorial font-normal leading-[1.08] tracking-tight text-[clamp(2.5rem,9vw,4.5rem)] text-[#faf4f7] mb-6">
+        Happy Birthday,<br />
+        <span class="italic text-[#f4c2d7]">Principessa</span>
+      </h1>
+
+      <p class="reveal-item reveal-delay-3 font-serif-editorial italic text-xl sm:text-2xl text-[#ffd166] tracking-wide max-w-md mb-10">
+        &ldquo;Light or fire, believe me, you will SHINE&rdquo;
+      </p>
+
+      <div class="reveal-item reveal-delay-4 mb-6">
+        <button id="giftBtn" type="button" class="gift-btn">one last surprise</button>
+        <p id="surprise">Psst&hellip; I&rsquo;d love to celebrate with you for real. Cake&rsquo;s on me &#127856;</p>
+      </div>
+
+      <div class="reveal-item reveal-delay-4">
+        <button id="replayBtn" type="button" class="replay-btn font-mono-code">
+          replay
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Celebratory Stardust & Petals Overlay Canvas -->
+  <canvas id="celebrationCanvas" aria-hidden="true"></canvas>
+
+  <script>
+    /* =========================================================================
+       EASY CUSTOMIZATION CONFIG
+       Feel free to tweak any text, timing, or colors right here.
+       ========================================================================= */
+    const CONFIG = {
+      bouquetRevealDelayMs: 5000, // Time before "grown in code" & cake button fade in
+      maxDodges: 3,               // Exact number of times the button playfully runs away
+      dodgeDebounceMs: 320,       // Prevents double-counting on touch/mouse
+      dodgeLines: [
+        "Wait\u2014did you actually make a wish?",
+        "Almost had it. Try again.",
+        "Okay, okay, I\u2019ll stay still. Promise."
+      ],
+      initialHint: "Make a wish first... then blow them out.",
+      blownHint: "Wish locked in.",
+      transitionToScene3Ms: 1400
+    };
+
+    /* =========================================================================
+       SCENE 1: ANIMATED ASCII FLOWER BOUQUET (HTML5 CANVAS)
+       Glowing botanical emerald stems & leaves with unfurling ASCII blossoms.
+       ========================================================================= */
+    const bouquetCanvas = document.getElementById("bouquetCanvas");
+    let bCtx = bouquetCanvas.getContext("2d");
+    let oc, octx, mc, mctx, fc, fctx, cols = 1, rows = 1, cell = 7;
+    const RAMP = " .:-=+*#%@";
+
+    let bw = 0;
+    let bh = 0;
+    let dpr = Math.min(window.devicePixelRatio || 1, 2);
+
+    // Stem & bouquet data
+    let stems = [];
+    let fireflies = [];
+    let interactivePetals = [];
+    let bouquetStartTime = performance.now();
+    let breezeImpulse = 0; // Extra sway triggered by clicks/taps
+
+    // ASCII character palettes
+    const STEM_CHARS = ["|", ":", ";", "|", "/"];
+    const LEAF_LEFT = ["\\", "~", ",", ";"];
+    const LEAF_RIGHT = ["/", "~", ",", ";"];
+    const PETAL_CHARS = ["*", "+", "o", ".", "~", "(", ")"];
+
+    // Layered botanical emerald greens
+    const GREEN_PALETTE = ["#2d6a4f", "#40916c", "#52b788", "#95d5b2"];
+
+    // Soft warm blossom palettes (blush pink, pearl white, rose, pale lavender)
+    const BLOSSOM_PALETTES = [
+      ["#f4c2d7", "#ffe5ef", "#e89cb8"], // Blush rose
+      ["#fff4f8", "#f7dce6", "#ffd6e6"], // Pearl white & soft pink
+      ["#e5c6f2", "#f3e3fa", "#d2a8e6"], // Pale lavender
+      ["#f8c8d8", "#fff0f5", "#e598b2"], // Warm petal rose
+      ["#f3d5e5", "#fff7fa", "#d9a9c4"]  // Champagne rose
+    ];
+
+    /**
+     * Generates 10 gracefully fanned stems tied near the bottom center.
+     */
+    function buildBouquet() {
+      stems = [];
+      cell = bw < 480 ? 6.5 : 7.5;
+      cols = Math.ceil(bw / cell); rows = Math.ceil(bh / cell);
+      oc = document.createElement("canvas"); oc.width = cols * 4; oc.height = rows * 4; octx = oc.getContext("2d");
+      mc = document.createElement("canvas"); mc.width = cols * 2; mc.height = rows * 2; mctx = mc.getContext("2d");
+      fc = document.createElement("canvas"); fc.width = cols; fc.height = rows; fctx = fc.getContext("2d", { willReadFrequently: true });
+
+      const baseX = bw * 0.5, baseY = bh * 0.91;
+      const reach = Math.min(bh * 0.5, 400), W = Math.min(bw * 0.3, 150);
+      const RP = Math.max(28, Math.min(bw * 0.1, 50)), RW = RP * 0.72;
+      const PINK = { e: "#ffd3e4", m: "#f47aab", c: "#c2306f", rib: "rgba(170,30,90,0.55)", spots: true };
+      const WHITE = { e: "#ffffff", m: "#f6f1f4", c: "#e8d98f", rib: "rgba(200,190,160,0.5)", spots: false };
+      const greens = ["#1f6b2c", "#2e8b3a", "#17521f"];
+
+      // leafy filler stems first (they sit behind the flowers)
+      for (let i = 0; i < 12; i++) {
+        const x = -1 + i * (2 / 11), h = 0.2 + (1 - Math.abs(x)) * 0.32 + (i % 3) * 0.04;
+        const tipX = baseX + x * W * 1.15, tipY = baseY - reach * h, leaves = [];
+        for (let l = 0; l < 6; l++) leaves.push({ t: 0.18 + l * 0.12, side: (i + l) % 2 ? 1 : -1, len: 44 + l * 7, col: greens[(i + l) % 3] });
+        stems.push({ baseX: baseX + x * 5, baseY, cpX: baseX + (tipX - baseX) * 0.3, cpY: baseY - (baseY - tipY) * 0.55, tipX, tipY,
+          delay: i * 0.05, growDuration: 1.4, bloomDuration: 1, R: 0, swayPhase: i, swaySpeed: 0.7 + (i % 4) * 0.1, leaves, amp: 3 });
+      }
+      // [x, height, isPink]
+      const fl = [[-.85,.62,0],[.85,.68,0],[-.62,.42,0],[.12,.8,0],[-.2,.66,1],[.38,.6,1],[-.5,.84,1],[.5,.9,1],[0,1,1]];
+      fl.forEach((f, i) => {
+        const tipX = baseX + f[0] * W, tipY = baseY - reach * f[1], leaves = [];
+        for (let l = 0; l < 4; l++) leaves.push({ t: 0.16 + l * 0.12, side: (i + l) % 2 ? 1 : -1, len: 34 + l * 8, col: greens[(i + l) % 3] });
+        stems.push({ baseX: baseX + f[0] * 5, baseY, cpX: baseX + (tipX - baseX) * 0.3, cpY: baseY - (baseY - tipY) * 0.55, tipX, tipY,
+          delay: 0.3 + i * 0.18, growDuration: 1.7, bloomDuration: 1.3, R: f[2] ? RP : RW, palette: f[2] ? PINK : WHITE,
+          swayPhase: i * 0.8, swaySpeed: 0.8 + (i % 4) * 0.1, leaves, amp: 5 });
+      });
+    }
+
+    /** Lily: 6 pointed petals, ribs, spots and stamens */
+    function drawLily(x, y, R, prog, pal, t, seed) {
+      const e = 1 - Math.pow(1 - prog, 3);
+      if (e <= 0.02) return;
+      const r = R * e;
+      bCtx.save();
+      bCtx.translate(x, y);
+      bCtx.rotate(seed * 1.7 + Math.sin(t * 0.6 + seed) * 0.06 + (1 - e) * 0.8);
+      bCtx.scale(1, 0.82);
+      bCtx.globalAlpha = Math.min(1, e * 1.5);
+      for (let pass = 0; pass < 2; pass++) {
+        for (let k = 0; k < 3; k++) {
+          const len = r * (pass ? 0.9 : 1), wd = r * (pass ? 0.2 : 0.24);
+          bCtx.save();
+          bCtx.rotate((k * 120 + pass * 60) * Math.PI / 180);
+          const g = bCtx.createLinearGradient(0, 0, len, 0);
+          g.addColorStop(0, pal.c); g.addColorStop(0.45, pal.m); g.addColorStop(1, pal.e);
+          bCtx.fillStyle = g;
+          bCtx.beginPath();
+          bCtx.moveTo(0, 0);
+          bCtx.bezierCurveTo(len * 0.25, -wd * 1.1, len * 0.7, -wd * 1.2, len, 0);
+          bCtx.bezierCurveTo(len * 0.7, wd * 1.2, len * 0.25, wd * 1.1, 0, 0);
+          bCtx.fill();
+          bCtx.strokeStyle = pal.rib; bCtx.lineWidth = Math.max(1, r * 0.04);
+          bCtx.beginPath(); bCtx.moveTo(len * 0.08, 0); bCtx.lineTo(len * 0.85, 0); bCtx.stroke();
+          if (pal.spots) {
+            bCtx.fillStyle = pal.rib;
+            [[.3, -.2], [.42, .12], [.52, -.1], [.36, .22]].forEach((q) => {
+              bCtx.beginPath(); bCtx.arc(len * q[0], wd * q[1] * 2, r * 0.022, 0, 6.3); bCtx.fill();
+            });
+          }
+          bCtx.restore();
+        }
+      }
+      for (let k = 0; k < 5; k++) {
+        const a = k * 1.26 + 0.3, ex = Math.cos(a) * r * 0.5, ey = Math.sin(a) * r * 0.5;
+        bCtx.strokeStyle = "#f2e8a0"; bCtx.lineWidth = Math.max(1, r * 0.03);
+        bCtx.beginPath(); bCtx.moveTo(0, 0); bCtx.lineTo(ex, ey); bCtx.stroke();
+        bCtx.fillStyle = "#d2691e";
+        bCtx.beginPath(); bCtx.ellipse(ex, ey, r * 0.08, r * 0.04, a, 0, 6.3); bCtx.fill();
+      }
+      bCtx.restore();
+    }
+
+    /** Turns the offscreen drawing into coloured ASCII characters */
+    function asciiRender() {
+      mctx.clearRect(0, 0, mc.width, mc.height);
+      mctx.imageSmoothingQuality = "high";
+      mctx.drawImage(oc, 0, 0, mc.width, mc.height);
+      fctx.clearRect(0, 0, cols, rows);
+      fctx.imageSmoothingQuality = "high";
+      fctx.drawImage(mc, 0, 0, cols, rows);
+      const d = fctx.getImageData(0, 0, cols, rows).data;
+      bCtx.shadowBlur = 0; bCtx.globalAlpha = 1;
+      bCtx.font = `${(cell * 1.25).toFixed(1)}px "JetBrains Mono", monospace`;
+      bCtx.textAlign = "center"; bCtx.textBaseline = "middle";
+      for (let y = 0; y < rows; y++) {
+        for (let x = 0; x < cols; x++) {
+          const i = (y * cols + x) * 4;
+          if (d[i + 3] < 50) continue;
+          const r = d[i], g = d[i + 1], b = d[i + 2];
+          const lum = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
+          const ch = RAMP[Math.max(1, Math.min(RAMP.length - 1, Math.floor(lum * RAMP.length * 1.15)))];
+          bCtx.fillStyle = `rgb(${Math.min(255, r * 1.15) | 0},${Math.min(255, g * 1.15) | 0},${Math.min(255, b * 1.15) | 0})`;
+          bCtx.fillText(ch, x * cell + cell / 2, y * cell + cell / 2);
+        }
+      }
+    }
+
+    /**
+     * Initializes ambient ASCII fireflies / floating pollen specks.
+     */
+    function buildFireflies() {
+      fireflies = [];
+      const count = bw < 500 ? 28 : 44;
+      const chars = [".", "*", "+", ".", "`"];
+      for (let i = 0; i < count; i++) {
+        fireflies.push({
+          x: Math.random() * bw,
+          y: Math.random() * bh,
+          vx: (Math.random() - 0.5) * 0.22,
+          vy: -0.12 - Math.random() * 0.28,
+          char: chars[i % chars.length],
+          phase: Math.random() * Math.PI * 2,
+          size: 10 + Math.random() * 5,
+          color: i % 3 === 0 ? "#ffd166" : (i % 3 === 1 ? "#95d5b2" : "#f4c2d7")
+        });
+      }
+    }
+
+    /**
+     * Evaluates a quadratic Bezier point at parameter t [0..1].
+     */
+    function quadPoint(x0, y0, cx, cy, x1, y1, t) {
+      const mt = 1 - t;
+      return {
+        x: mt * mt * x0 + 2 * mt * t * cx + t * t * x1,
+        y: mt * mt * y0 + 2 * mt * t * cy + t * t * y1
+      };
+    }
+
+    /**
+     * Draws an unfurling ASCII lily / blossom at (cx, cy).
+     */
+    function drawAsciiBlossom(cx, cy, bloomProg, stem, timeSec) {
+      if (bloomProg <= 0.01) return;
+
+      const eased = 1 - Math.pow(1 - bloomProg, 3); // Cubic ease-out
+      const petalCount = 6;
+      const maxRadius = 26 * stem.scale * eased;
+      const rotOffset = Math.sin(timeSec * 0.7 + stem.swayPhase) * 0.08;
+
+      bCtx.textAlign = "center";
+      bCtx.textBaseline = "middle";
+
+      // Draw layered petals with ASCII symbols
+      for (let p = 0; p < petalCount; p++) {
+        const angle = (p / petalCount) * Math.PI * 2 - Math.PI / 2 + rotOffset;
+        const steps = 4;
+
+        for (let s = 1; s <= steps; s++) {
+          const frac = s / steps;
+          const dist = maxRadius * frac;
+          const px = cx + Math.cos(angle) * dist;
+          const py = cy + Math.sin(angle) * dist * 0.86; // Gentle perspective
+
+          const colorIdx = s <= 2 ? 0 : (s === 3 ? 1 : 2);
+          const ch = s === steps
+            ? PETAL_CHARS[(p + 1) % 3]
+            : PETAL_CHARS[(p + s) % PETAL_CHARS.length];
+
+          bCtx.font = `${Math.round((10 + frac * 4) * stem.scale)}px "JetBrains Mono", monospace`;
+          bCtx.fillStyle = stem.palette[colorIdx];
+          bCtx.shadowColor = stem.palette[0];
+          bCtx.shadowBlur = 10;
+          bCtx.globalAlpha = Math.min(1, eased * (1.15 - frac * 0.25));
+          bCtx.fillText(ch, px, py);
+
+          // Soft side shimmer characters for fuller lily petals
+          if (s === 2 || s === 3) {
+            const perp = angle + Math.PI / 2;
+            const spread = (4.5 + s * 1.4) * stem.scale * eased;
+            bCtx.font = `${Math.round(9 * stem.scale)}px "JetBrains Mono", monospace`;
+            bCtx.globalAlpha = eased * 0.58;
+            bCtx.fillText("(", px + Math.cos(perp) * spread, py + Math.sin(perp) * spread * 0.85);
+            bCtx.fillText(")", px - Math.cos(perp) * spread, py - Math.sin(perp) * spread * 0.85);
+          }
+        }
+      }
+
+      // Warm golden glowing stamen center
+      bCtx.globalAlpha = eased;
+      bCtx.font = `bold ${Math.round(13 * stem.scale)}px "JetBrains Mono", monospace`;
+      bCtx.fillStyle = "#ffd166";
+      bCtx.shadowColor = "#ffd166";
+      bCtx.shadowBlur = 14;
+      bCtx.fillText("*", cx, cy);
+
+      bCtx.font = `${Math.round(9 * stem.scale)}px "JetBrains Mono", monospace`;
+      bCtx.fillStyle = "#fff6d6";
+      bCtx.fillText("o", cx, cy);
+      bCtx.globalAlpha = 1;
+    }
+
+    /**
+     * Draws the gathered ASCII ribbon/foliage cluster at the bouquet tie point.
+     */
+    function drawBouquetTie(baseX, baseY, elapsedSec) {
+      const alpha = Math.min(1, elapsedSec / 0.7);
+      if (alpha <= 0) return;
+
+      bCtx.save();
+      bCtx.globalAlpha = alpha * 0.92;
+      bCtx.textAlign = "center";
+      bCtx.textBaseline = "middle";
+
+      // Dense gathered emerald stem base
+      const tieY = baseY - Math.min(bh * 0.14, 105);
+      bCtx.font = '12px "JetBrains Mono", monospace';
+      bCtx.shadowBlur = 8;
+
+      for (let row = 0; row < 5; row++) {
+        const y = tieY + row * 9;
+        const spread = 14 - Math.abs(row - 1) * 3;
+        const chars = row === 2 ? ["~", "=", "~"] : ["\\", "|", "/"];
+        for (let c = -1; c <= 1; c++) {
+          bCtx.fillStyle = row === 2 ? "#f4c2d7" : GREEN_PALETTE[(row + c + 4) % GREEN_PALETTE.length];
+          bCtx.shadowColor = row === 2 ? "#f4c2d7" : "#52b788";
+          bCtx.fillText(chars[c + 1], baseX + c * (spread * 0.45), y);
+        }
+      }
+      bCtx.restore();
+    }
+
+    /**
+     * Releases a few glowing floating ASCII petals when the user taps/clicks the bouquet.
+     */
+    function spawnInteractivePetals(x, y) {
+      breezeImpulse = Math.min(breezeImpulse + 1.25, 2.4);
+      const count = 9;
+      for (let i = 0; i < count; i++) {
+        const angle = Math.random() * Math.PI * 2;
+        const speed = 0.6 + Math.random() * 1.6;
+        interactivePetals.push({
+          x,
+          y,
+          vx: Math.cos(angle) * speed,
+          vy: Math.sin(angle) * speed - 0.6,
+          life: 1,
+          decay: 0.008 + Math.random() * 0.009,
+          char: PETAL_CHARS[i % PETAL_CHARS.length],
+          color: i % 3 === 0 ? "#ffd166" : (i % 2 === 0 ? "#f4c2d7" : "#95d5b2"),
+          size: 11 + Math.random() * 5
+        });
+      }
+    }
+
+    /**
+     * Main animation loop for Scene 1 (runs softly in background in Scenes 2 & 3).
+     */
+    function animateBouquet(now) {
+      const elapsedSec = (now - bouquetStartTime) / 1000;
+      breezeImpulse *= 0.96; // Smoothly damp any click/tap breeze ripple
+
+      bCtx.clearRect(0, 0, bw, bh);
+      bCtx.fillStyle = "#060608";
+      bCtx.fillRect(0, 0, bw, bh);
+
+      // Subtle emerald-midnight ambient glow behind bouquet center
+      const bgGlow = bCtx.createRadialGradient(bw * 0.5, bh * 0.52, 10, bw * 0.5, bh * 0.52, Math.max(bw, bh) * 0.46);
+      bgGlow.addColorStop(0, "rgba(45, 106, 79, 0.14)");
+      bgGlow.addColorStop(0.55, "rgba(25, 48, 38, 0.05)");
+      bgGlow.addColorStop(1, "rgba(6, 6, 8, 0)");
+      bCtx.fillStyle = bgGlow;
+      bCtx.fillRect(0, 0, bw, bh);
+
+      // 1. Ambient floating ASCII fireflies / pollen specks
+      bCtx.textAlign = "center";
+      bCtx.textBaseline = "middle";
+      for (let i = 0; i < fireflies.length; i++) {
+        const f = fireflies[i];
+        f.x += f.vx + Math.sin(elapsedSec * 0.8 + f.phase) * 0.18 + breezeImpulse * 0.4;
+        f.y += f.vy;
+
+        if (f.y < -10) { f.y = bh + 10; f.x = Math.random() * bw; }
+        if (f.x < -10) f.x = bw + 10;
+        if (f.x > bw + 10) f.x = -10;
+
+        const twinkle = 0.22 + 0.52 * (0.5 + 0.5 * Math.sin(elapsedSec * 2.1 + f.phase));
+        bCtx.font = `${f.size}px "JetBrains Mono", monospace`;
+        bCtx.fillStyle = f.color;
+        bCtx.shadowColor = f.color;
+        bCtx.shadowBlur = 8;
+        bCtx.globalAlpha = twinkle;
+        bCtx.fillText(f.char, f.x, f.y);
+      }
+      bCtx.globalAlpha = 1;
+
+      // 2. Draw the bouquet offscreen, then convert it to ASCII
+      const screenCtx = bCtx;
+      octx.setTransform(1, 0, 0, 1, 0, 0);
+      octx.clearRect(0, 0, oc.width, oc.height);
+      octx.setTransform(oc.width / bw, 0, 0, oc.height / bh, 0, 0);
+      bCtx = octx;
+      const flowers = [];
+      bCtx.lineCap = "round";
+      for (let i = 0; i < stems.length; i++) {
+        const s = stems[i];
+        const lt = Math.max(0, elapsedSec - s.delay);
+        const raw = Math.min(1, lt / s.growDuration);
+        const gp = 1 - Math.pow(1 - raw, 2.4);
+        if (gp <= 0.01) continue;
+
+        const sway = Math.sin(elapsedSec * s.swaySpeed + s.swayPhase) * (s.amp + breezeImpulse * 10);
+        const tx = s.tipX + sway, ty = s.tipY + Math.abs(sway) * 0.1, cx = s.cpX + sway * 0.45, cy = s.cpY;
+
+        bCtx.strokeStyle = "#2f7d32";
+        bCtx.lineWidth = 3.4;
+        bCtx.globalAlpha = 1;
+        bCtx.beginPath();
+        bCtx.moveTo(s.baseX, s.baseY);
+        for (let k = 1; k <= 28; k++) {
+          const pt = quadPoint(s.baseX, s.baseY, cx, cy, tx, ty, gp * k / 28);
+          bCtx.lineTo(pt.x, pt.y);
+        }
+        bCtx.stroke();
+
+        for (let l = 0; l < s.leaves.length; l++) {
+          const lf = s.leaves[l];
+          if (gp < lf.t) continue;
+          const lg = Math.min(1, (gp - lf.t) / 0.2);
+          const o = quadPoint(s.baseX, s.baseY, cx, cy, tx, ty, lf.t);
+          const len = lf.len * lg * (bw < 480 ? 0.85 : 1), sd = lf.side;
+          bCtx.beginPath();
+          bCtx.moveTo(o.x, o.y);
+          bCtx.quadraticCurveTo(o.x + sd * len * 0.5, o.y - len * 0.7, o.x + sd * len, o.y - len * 0.4);
+          bCtx.quadraticCurveTo(o.x + sd * len * 0.45, o.y - len * 0.02, o.x, o.y);
+          bCtx.fillStyle = lf.col;
+          bCtx.strokeStyle = "#6fbf73";
+          bCtx.lineWidth = 0.8;
+          bCtx.fill();
+          bCtx.stroke();
+        }
+
+        if (s.R && raw > 0.78) {
+          const bp = Math.min(1, Math.max(0, lt - s.growDuration * 0.78) / s.bloomDuration);
+          const tip = quadPoint(s.baseX, s.baseY, cx, cy, tx, ty, gp);
+          flowers.push({ x: tip.x, y: tip.y, s, bp, i });
+        }
+      }
+      flowers.sort((a, b) => a.y - b.y);
+      flowers.forEach((f) => drawLily(f.x, f.y, f.s.R, f.bp, f.s.palette, elapsedSec, f.i));
+      bCtx = screenCtx;
+      asciiRender();
+
+      // 3. Gathered base tie
+      drawBouquetTie(bw * 0.5, bh * 0.91, elapsedSec);
+
+      // 4. Interactive tap/click floating petals
+      for (let i = interactivePetals.length - 1; i >= 0; i--) {
+        const p = interactivePetals[i];
+        p.x += p.vx;
+        p.y += p.vy;
+        p.vy += 0.012; // Very gentle float
+        p.vx *= 0.99;
+        p.life -= p.decay;
+
+        if (p.life <= 0) {
+          interactivePetals.splice(i, 1);
+          continue;
+        }
+
+        bCtx.font = `${p.size}px "JetBrains Mono", monospace`;
+        bCtx.fillStyle = p.color;
+        bCtx.shadowColor = p.color;
+        bCtx.shadowBlur = 10;
+        bCtx.globalAlpha = p.life;
+        bCtx.fillText(p.char, p.x, p.y);
+      }
+
+      bCtx.globalAlpha = 1;
+      bCtx.shadowBlur = 0;
+
+      requestAnimationFrame(animateBouquet);
+    }
+
+    function resizeBouquetCanvas() {
+      bw = window.innerWidth;
+      bh = window.innerHeight;
+      dpr = Math.min(window.devicePixelRatio || 1, 2);
+
+      bouquetCanvas.width = Math.floor(bw * dpr);
+      bouquetCanvas.height = Math.floor(bh * dpr);
+      bCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+      buildBouquet();
+      buildFireflies();
+    }
+
+    // Tap or click canvas to create a gentle breeze ripple & floating petals
+    bouquetCanvas.addEventListener("pointerdown", (e) => {
+      spawnInteractivePetals(e.clientX, e.clientY);
+    });
+
+    /* =========================================================================
+       CELEBRATION CANVAS (Golden Stardust & Soft Rose/Cream Petals)
+       ========================================================================= */
+    const celCanvas = document.getElementById("celebrationCanvas");
+    const cCtx = celCanvas.getContext("2d");
+    let cw = 0;
+    let ch = 0;
+    let celParticles = [];
+    let celActive = false;
+
+    function resizeCelCanvas() {
+      cw = window.innerWidth;
+      ch = window.innerHeight;
+      celCanvas.width = Math.floor(cw * dpr);
+      celCanvas.height = Math.floor(ch * dpr);
+      cCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    }
+
+    /**
+     * Triggers a refined burst of golden stardust and delicate rose/cream petals.
+     */
+    function launchCelebration() {
+      celActive = true;
+      const originX = cw * 0.5;
+      const originY = ch * 0.44;
+      const colors = ["#ffd166", "#f4c2d7", "#fff2e6", "#e89cb8", "#f3d5a5"];
+
+      // Initial soft radial burst
+      for (let i = 0; i < 85; i++) {
+        const angle = Math.random() * Math.PI * 2;
+        const speed = 1.2 + Math.random() * 5.2;
+        const isPetal = i % 3 !== 0;
+
+        celParticles.push({
+          x: originX + (Math.random() - 0.5) * 40,
+          y: originY + (Math.random() - 0.5) * 30,
+          vx: Math.cos(angle) * speed,
+          vy: Math.sin(angle) * speed - 1.8,
+          size: isPetal ? 4 + Math.random() * 4.5 : 1.5 + Math.random() * 2.2,
+          color: colors[i % colors.length],
+          isPetal,
+          rot: Math.random() * Math.PI * 2,
+          vRot: (Math.random() - 0.5) * 0.08,
+          alpha: 0.95,
+          drift: Math.random() * Math.PI * 2,
+          ambient: false
+        });
+      }
+
+      // Gentle ongoing floating petals/sparks for Scene 3
+      for (let i = 0; i < 36; i++) {
+        celParticles.push({
+          x: Math.random() * cw,
+          y: -Math.random() * ch * 0.8,
+          vx: (Math.random() - 0.5) * 0.45,
+          vy: 0.45 + Math.random() * 0.85,
+          size: i % 2 === 0 ? 3.5 + Math.random() * 3.5 : 1.5 + Math.random() * 1.8,
+          color: colors[i % colors.length],
+          isPetal: i % 2 === 0,
+          rot: Math.random() * Math.PI * 2,
+          vRot: (Math.random() - 0.5) * 0.03,
+          alpha: 0.65,
+          drift: Math.random() * Math.PI * 2,
+          ambient: true
+        });
+      }
+    }
+
+    function animateCelebration() {
+      if (celActive || celParticles.length > 0) {
+        cCtx.clearRect(0, 0, cw, ch);
+
+        for (let i = celParticles.length - 1; i >= 0; i--) {
+          const p = celParticles[i];
+          p.drift += 0.025;
+
+          if (p.ambient) {
+            p.x += p.vx + Math.sin(p.drift) * 0.35;
+            p.y += p.vy;
+            p.rot += p.vRot;
+
+            if (p.y > ch + 20) {
+              p.y = -15;
+              p.x = Math.random() * cw;
+            }
+          } else {
+            p.vx *= 0.985;
+            p.vy = p.vy * 0.985 + 0.06; // Soft gravity
+            p.x += p.vx + Math.sin(p.drift) * 0.3;
+            p.y += p.vy;
+            p.rot += p.vRot;
+            p.alpha -= 0.0055;
+
+            if (p.alpha <= 0) {
+              celParticles.splice(i, 1);
+              continue;
+            }
+          }
+
+          cCtx.save();
+          cCtx.translate(p.x, p.y);
+          cCtx.rotate(p.rot);
+          cCtx.globalAlpha = Math.max(0, p.alpha);
+          cCtx.fillStyle = p.color;
+
+          if (p.isPetal) {
+            // Delicate organic petal oval
+            cCtx.beginPath();
+            cCtx.ellipse(0, 0, p.size, p.size * 0.52, 0, 0, Math.PI * 2);
+            cCtx.fill();
+          } else {
+            // Glowing stardust speck
+            cCtx.shadowColor = p.color;
+            cCtx.shadowBlur = 8;
+            cCtx.beginPath();
+            cCtx.arc(0, 0, p.size, 0, Math.PI * 2);
+            cCtx.fill();
+          }
+          cCtx.restore();
+        }
+      }
+      requestAnimationFrame(animateCelebration);
+    }
+
+    /* =========================================================================
+       SCENE MANAGEMENT & SCENE 2 RUNAWAY BUTTON LOGIC
+       ========================================================================= */
+    const scene1UI = document.getElementById("scene1-ui");
+    const scene1Footer = document.getElementById("scene1Footer");
+    const toCakeBtn = document.getElementById("toCakeBtn");
+
+    const scene2 = document.getElementById("scene2");
+    const cakeStage = document.getElementById("cakeStage");
+    const cakeSvg = document.getElementById("cake-svg");
+    const cakeHint = document.getElementById("cakeHint");
+    const blowBtn = document.getElementById("blowBtn");
+
+    const scene3 = document.getElementById("scene3");
+    const replayBtn = document.getElementById("replayBtn");
+
+    let revealTimer = null;
+    let scene3Timer = null;
+    let dodges = 0;
+    let lastDodgeTime = 0;
+    let candlesBlown = false;
+
+    /**
+     * Smoothly updates the hint line in Scene 2.
+     */
+    function setHintText(newText) {
+      cakeHint.classList.add("swapping");
+      setTimeout(() => {
+        cakeHint.textContent = newText;
+        cakeHint.classList.remove("swapping");
+      }, 210);
+    }
+
+    /**
+     * Moves the "Blow out the candles" button to a safe random position inside
+     * the viewport, avoiding screen edges (24px margin) and the cake center.
+     */
+    function dodgeButton() {
+      if (dodges >= CONFIG.maxDodges || candlesBlown) return false;
+
+      const now = Date.now();
+      if (now - lastDodgeTime < CONFIG.dodgeDebounceMs) return true;
+      lastDodgeTime = now;
+
+      const btnRect = blowBtn.getBoundingClientRect();
+      const cakeRect = cakeSvg.getBoundingClientRect();
+
+      // Anchor to fixed coordinates at its current spot first so the glide is smooth
+      if (blowBtn.style.position !== "fixed") {
+        blowBtn.style.position = "fixed";
+        blowBtn.style.left = `${btnRect.left}px`;
+        blowBtn.style.top = `${btnRect.top}px`;
+        blowBtn.style.margin = "0";
+        // Force reflow so browser registers the starting point before transitioning
+        void blowBtn.offsetWidth;
+      }
+
+      const margin = 24;
+      const minX = margin;
+      const maxX = Math.max(margin, window.innerWidth - btnRect.width - margin);
+      const minY = margin;
+      const maxY = Math.max(margin, window.innerHeight - btnRect.height - margin);
+
+      // Pick a candidate position that stays away from the cake center and previous spot
+      let targetX = minX + Math.random() * (maxX - minX);
+      let targetY = minY + Math.random() * (maxY - minY);
+
+      for (let attempt = 0; attempt < 25; attempt++) {
+        const cx = minX + Math.random() * (maxX - minX);
+        const cy = minY + Math.random() * (maxY - minY);
+
+        const distFromCurrent = Math.hypot(cx - btnRect.left, cy - btnRect.top);
+        const overlapsCake =
+          cx + btnRect.width > cakeRect.left - 10 &&
+          cx < cakeRect.right + 10 &&
+          cy + btnRect.height > cakeRect.top - 10 &&
+          cy < cakeRect.bottom + 10;
+
+        if (distFromCurrent > 90 && !overlapsCake) {
+          targetX = cx;
+          targetY = cy;
+          break;
+        }
+      }
+
+      blowBtn.style.left = `${Math.round(targetX)}px`;
+      blowBtn.style.top = `${Math.round(targetY)}px`;
+
+      setHintText(CONFIG.dodgeLines[dodges]);
+      dodges++;
+
+      return true;
+    }
+
+    // Desktop hover triggers dodge (mouse only so touchscreens don't misfire)
+    blowBtn.addEventListener("pointerenter", (e) => {
+      if (e.pointerType === "mouse" && dodges < CONFIG.maxDodges) {
+        dodgeButton();
+      }
+    });
+
+    // Touch / pen tap triggers dodge cleanly without double-firing click
+    blowBtn.addEventListener("pointerdown", (e) => {
+      if (e.pointerType !== "mouse" && dodges < CONFIG.maxDodges) {
+        e.preventDefault();
+        dodgeButton();
+      }
+    });
+
+    // Click handler: catches keyboard/fallback dodges, and handles the 4th (real) press
+    blowBtn.addEventListener("click", (e) => {
+      if (dodges < CONFIG.maxDodges) {
+        e.preventDefault();
+        dodgeButton();
+        return;
+      }
+
+      if (candlesBlown) return;
+      candlesBlown = true;
+
+      // 1. Fade button away
+      blowBtn.classList.add("fade-away");
+
+      // 2. Extinguish flames, trigger curling smoke wisps, soften glow
+      cakeStage.classList.add("candles-out");
+
+      // 3. Update prompt
+      setHintText(CONFIG.blownHint);
+
+      // 4. Launch gentle celebratory stardust & petals
+      launchCelebration();
+      playTune();
+
+      // 5. Smoothly transition to Scene 3 after 1.4s
+      scene3Timer = setTimeout(() => {
+        enterScene3();
+      }, CONFIG.transitionToScene3Ms);
+    });
+
+    /* --- Scene Transitions --- */
+    function enterScene1() {
+      clearTimeout(revealTimer);
+      clearTimeout(scene3Timer);
+
+      // Reset canvases & states
+      bouquetStartTime = performance.now();
+      breezeImpulse = 0;
+      interactivePetals = [];
+      celActive = false;
+      celParticles = [];
+      cCtx.clearRect(0, 0, cw, ch);
+
+      // Reset Scene 2 button & candles
+      dodges = 0;
+      lastDodgeTime = 0;
+      candlesBlown = false;
+      cakeStage.classList.remove("candles-out");
+      cakeHint.textContent = CONFIG.initialHint;
+      blowBtn.classList.remove("fade-away");
+      blowBtn.style.position = "";
+      blowBtn.style.left = "";
+      blowBtn.style.top = "";
+      blowBtn.style.margin = "";
+
+      // Show Scene 1
+      bouquetCanvas.classList.remove("dimmed-scene2", "dimmed-scene3");
+      scene2.classList.remove("active");
+      scene3.classList.remove("active");
+      scene1UI.classList.add("active");
+      scene1Footer.classList.remove("visible");
+
+      // Fade in caption & button after bouquet blooms
+      revealTimer = setTimeout(() => {
+        scene1Footer.classList.add("visible");
+      }, CONFIG.bouquetRevealDelayMs);
+    }
+
+    function enterScene2() {
+      scene1UI.classList.remove("active");
+      scene1Footer.classList.remove("visible");
+      bouquetCanvas.classList.add("dimmed-scene2");
+
+      setTimeout(() => {
+        scene2.classList.add("active");
+      }, 320);
+    }
+
+    function enterScene3() {
+      scene2.classList.remove("active");
+      bouquetCanvas.classList.remove("dimmed-scene2");
+      bouquetCanvas.classList.add("dimmed-scene3");
+
+      setTimeout(() => {
+        scene3.classList.add("active");
+      }, 420);
+    }
+
+    // Soft music-box "Happy Birthday" (WebAudio, starts on her tap)
+    function playTune() {
+      try {
+        const AC = window.AudioContext || window.webkitAudioContext;
+        const ac = new AC();
+        const N = {G4:392,A4:440,B4:494,C5:523,D5:587,E5:659,F5:698,G5:784};
+        const seq = [["G4",.75],["G4",.25],["A4",1],["G4",1],["C5",1],["B4",2],
+          ["G4",.75],["G4",.25],["A4",1],["G4",1],["D5",1],["C5",2],
+          ["G4",.75],["G4",.25],["G5",1],["E5",1],["C5",1],["B4",1],["A4",2],
+          ["F5",.75],["F5",.25],["E5",1],["C5",1],["D5",1],["C5",2]];
+        let t = ac.currentTime + 0.3;
+        seq.forEach(([n, b]) => {
+          const d = b * 0.42, o = ac.createOscillator(), g = ac.createGain();
+          o.type = "triangle"; o.frequency.value = N[n];
+          g.gain.setValueAtTime(0, t);
+          g.gain.linearRampToValueAtTime(0.16, t + 0.02);
+          g.gain.exponentialRampToValueAtTime(0.001, t + d * 1.6);
+          o.connect(g); g.connect(ac.destination);
+          o.start(t); o.stop(t + d * 1.7);
+          t += d;
+        });
+      } catch (err) {}
+    }
+
+    document.getElementById("giftBtn").addEventListener("click", () => {
+      document.getElementById("surprise").classList.add("show");
+      launchCelebration();
+    });
+    replayBtn.addEventListener("click", () => document.getElementById("surprise").classList.remove("show"));
+
+    toCakeBtn.addEventListener("click", enterScene2);
+    replayBtn.addEventListener("click", enterScene1);
+
+    /* =========================================================================
+       INITIALIZATION & RESIZE HANDLING
+       ========================================================================= */
+    window.addEventListener("resize", () => {
+      resizeBouquetCanvas();
+      resizeCelCanvas();
+
+      // Keep fixed runaway button within bounds if viewport resizes mid-dodge
+      if (blowBtn.style.position === "fixed") {
+        const rect = blowBtn.getBoundingClientRect();
+        const clampedX = Math.min(Math.max(24, rect.left), window.innerWidth - rect.width - 24);
+        const clampedY = Math.min(Math.max(24, rect.top), window.innerHeight - rect.height - 24);
+        blowBtn.style.left = `${Math.round(clampedX)}px`;
+        blowBtn.style.top = `${Math.round(clampedY)}px`;
+      }
+    });
+
+    window.addEventListener("load", () => {
+      resizeBouquetCanvas();
+      resizeCelCanvas();
+      enterScene1();
+      requestAnimationFrame(animateBouquet);
+      requestAnimationFrame(animateCelebration);
+    });
+  </script>
+</body>
+</html>
